@@ -24,6 +24,7 @@
 		"generate": "php bin/generate.php",
 		"check-generated": "php bin/generate.php --check",
 		"test": "phpunit",
-		"lint": "phpcs"
+		"lint": "phpcs",
+		"guard": "bin/guard.sh"
 	}
 }
