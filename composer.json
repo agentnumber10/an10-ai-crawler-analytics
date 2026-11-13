@@ -1,6 +1,6 @@
 {
-	"name": "agentnumber10/wp-aeo",
-	"description": "WordPress plugin: verified AI crawler visits, AI referrals and answer readiness.",
+	"name": "agentnumber10/an10-ai-crawler-analytics",
+	"description": "WordPress plugin: verified AI crawler visits, visits from AI answers and AEO readiness for every page.",
 	"type": "wordpress-plugin",
 	"license": "GPL-2.0-or-later",
 	"require": {
