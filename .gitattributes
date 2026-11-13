@@ -5,7 +5,6 @@
 *.zip binary
 
 # Left out of `git archive` and GitHub's "Download ZIP": developer files only.
-/.github export-ignore
 /.githooks export-ignore
 /.wordpress-org export-ignore
 /bin export-ignore
