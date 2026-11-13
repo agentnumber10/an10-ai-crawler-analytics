@@ -1,13 +1,21 @@
 # AN10 – AI Crawler Analytics
 
-A WordPress plugin that shows which AI crawlers really visit your site, checked
-against the IP address lists each operator publishes, which pages they have
-never fetched, and the visits that arrive from AI answers. It stores no IP
-addresses, needs no account, and sends nothing about your site anywhere.
+[![CI](https://github.com/agentnumber10/an10-ai-crawler-analytics/actions/workflows/ci.yml/badge.svg)](https://github.com/agentnumber10/an10-ai-crawler-analytics/actions/workflows/ci.yml)
 
-Made by [agentnumber10.com](https://agentnumber10.com). The WordPress.org
-readme, with the full description, privacy notes and the external services it
-can use, is [readme.txt](readme.txt).
+Privacy-first AI crawler analytics for WordPress. Anyone can send
+`User-agent: GPTBot`, so this plugin checks every claimed AI crawler visit
+against the IP addresses its operator publishes, counts only the real ones
+and flags the fakes. It also shows which pages no AI crawler has fetched,
+and the visits that arrive from AI answers in ChatGPT, Perplexity and
+others.
+
+No account, no IP addresses stored, and nothing about your site sent
+anywhere. Made by [agentnumber10.com](https://agentnumber10.com).
+
+![The plugin's overview: verified AI crawler fetches, pages fetched and visits from AI answers over the last 30 days](.wordpress-org/screenshot-1.png)
+
+The full description, privacy notes and the external services the plugin
+can use are in the WordPress.org readme, [readme.txt](readme.txt).
 
 ## Requirements
 
@@ -45,6 +53,8 @@ address lists.
   every URL under External services.
 - **Data** lives in one table, `{prefix}an10_events`, and a few `an10_*`
   options. Uninstalling deletes it only if the owner chose that in Settings.
+
+![Each AI crawler's fetches and pages, and the visits not counted: one spoofed, one that could not be checked](.wordpress-org/screenshot-2.png)
 
 ## Development
 
