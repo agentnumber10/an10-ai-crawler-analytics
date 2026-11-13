@@ -1,0 +1,820 @@
+/*
+ * The plugin's screen, drawn in the product's brand language: Inter and
+ * JetBrains Mono, ink for what fills, violet only for the logo and the focus
+ * ring, quiet lines, 28 and 32px controls, 14px semibold titles.
+ *
+ * Every value comes from tokens.css, which is generated from the product's
+ * brand tokens. Every rule is scoped to .an10 or to this screen's body class,
+ * so no other wp-admin screen changes. The fonts load from this plugin's own
+ * folder (licences in assets/fonts/OFL.txt), never from another site.
+ */
+
+@font-face {
+	font-family: "AN10 Inter";
+	src: url("../fonts/Inter-opsz-latin.woff2") format("woff2");
+	font-weight: 100 900;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "AN10 JetBrains Mono";
+	src: url("../fonts/JetBrainsMono-latin.woff2") format("woff2");
+	font-weight: 100 800;
+	font-style: normal;
+	font-display: swap;
+}
+
+/* The screen is white, as the product is. */
+body.toplevel_page_an10-ai-crawler-analytics,
+body.toplevel_page_an10-ai-crawler-analytics #wpwrap {
+	background: #fff;
+}
+
+.an10 {
+	--an10-sans: "AN10 Inter", -apple-system, blinkmacsystemfont, "Segoe UI", roboto, sans-serif;
+	--an10-mono: "AN10 JetBrains Mono", ui-monospace, sfmono-regular, menlo, consolas, monospace;
+	font-family: var(--an10-sans);
+	font-optical-sizing: auto;
+	font-size: 14px;
+	line-height: 20px;
+	letter-spacing: var(--an10-tracking-ui);
+	color: var(--an10-foreground);
+	max-width: 1280px;
+}
+
+.an10 code,
+.an10 pre,
+.an10 kbd {
+	font-family: var(--an10-mono);
+	font-size: 12px;
+	letter-spacing: 0;
+}
+
+.an10 p,
+.an10 li,
+.an10 td,
+.an10 th,
+.an10 label {
+	font-size: 14px;
+	line-height: 20px;
+}
+
+.an10 a {
+	color: var(--an10-foreground);
+	text-decoration-color: var(--an10-border-strong);
+	text-underline-offset: 3px;
+}
+
+.an10 a:hover {
+	color: var(--an10-foreground);
+	text-decoration-color: currentcolor;
+}
+
+.an10 :focus-visible,
+.an10 a:focus,
+.wp-core-ui .an10 .button:focus {
+	outline: 2px solid var(--an10-ring);
+	outline-offset: 2px;
+	box-shadow: none;
+}
+
+.an10 .description,
+.an10 p.description {
+	color: var(--an10-muted-foreground);
+	font-size: 13px;
+	font-style: normal;
+	max-width: var(--an10-measure);
+}
+
+/* Titles: 18px page title, 14px semibold everywhere else. */
+.an10 h1,
+.an10 h2,
+.an10 h3 {
+	color: var(--an10-foreground);
+	font-family: var(--an10-sans);
+	font-weight: var(--an10-weight-head);
+	letter-spacing: -0.01em;
+	padding: 0;
+}
+
+.an10 h2 {
+	font-size: 14px;
+	line-height: 20px;
+	margin: var(--an10-section-gap) 0 var(--an10-group-gap);
+}
+
+.an10 h3 {
+	font-size: 13px;
+	line-height: 20px;
+	margin: 0 0 var(--an10-group-gap);
+}
+
+/* Header: the product's mark, the name, who makes it. */
+.an10 .an10-head {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 16px 0 12px;
+}
+
+.an10 .an10-head img {
+	width: 28px;
+	height: 28px;
+	flex: none;
+}
+
+.an10 .an10-head h1 {
+	font-size: 18px;
+	line-height: 28px;
+	margin: 0;
+}
+
+.an10 .an10-by {
+	color: var(--an10-foreground-dim);
+	font-size: 13px;
+}
+
+.an10 hr.wp-header-end {
+	border: 0;
+	margin: 0;
+}
+
+/* Tabs: text with an ink underline, on one quiet rule. */
+.an10 .nav-tab-wrapper,
+.an10 .nav-tab-wrapper.wp-clearfix {
+	display: flex;
+	gap: 20px;
+	border-bottom: 1px solid var(--an10-line-quiet);
+	padding: 0;
+	margin: 0 0 24px;
+}
+
+.an10 .nav-tab {
+	background: none;
+	border: 0;
+	border-bottom: 2px solid transparent;
+	color: var(--an10-muted-foreground);
+	font-size: 14px;
+	font-weight: var(--an10-weight-ui);
+	line-height: 20px;
+	margin: 0 0 -1px;
+	padding: 8px 0 10px;
+}
+
+.an10 .nav-tab:hover,
+.an10 .nav-tab:focus {
+	background: none;
+	color: var(--an10-foreground);
+}
+
+.an10 .nav-tab-active,
+.an10 .nav-tab-active:hover,
+.an10 .nav-tab-active:focus {
+	background: none;
+	border-bottom-color: var(--an10-primary);
+	color: var(--an10-foreground);
+}
+
+/* Buttons: 28px secondary, 32px ink primary. */
+.wp-core-ui .an10 .button,
+.wp-core-ui .an10 .button-secondary {
+	background: var(--an10-background);
+	border: 1px solid var(--an10-border-strong);
+	border-radius: var(--an10-ctl-r-sm);
+	box-shadow: 0 1px 2px rgb(0 0 0 / 5%);
+	color: var(--an10-foreground);
+	font-family: var(--an10-sans);
+	font-size: 13px;
+	font-weight: var(--an10-weight-ui);
+	line-height: calc(var(--an10-ctl-sm) - 2px);
+	min-height: var(--an10-ctl-sm);
+	padding: 0 10px;
+}
+
+.wp-core-ui .an10 .button:hover {
+	background: var(--an10-surface-200);
+	border-color: var(--an10-border-strong);
+	color: var(--an10-foreground);
+}
+
+.wp-core-ui .an10 .button-primary,
+.wp-core-ui .an10 .an10-primary {
+	background: var(--an10-primary);
+	border: 1px solid var(--an10-primary);
+	color: var(--an10-primary-foreground);
+	line-height: calc(var(--an10-ctl-md) - 2px);
+	min-height: var(--an10-ctl-md);
+	padding: 0 14px;
+}
+
+.wp-core-ui .an10 .button-primary:hover,
+.wp-core-ui .an10 .an10-primary:hover,
+.wp-core-ui .an10 .button-primary:focus,
+.wp-core-ui .an10 .an10-primary:focus {
+	background: #000;
+	border-color: #000;
+	color: var(--an10-primary-foreground);
+}
+
+.an10 .submit {
+	margin-top: 16px;
+	padding: 0;
+}
+
+/* Fields. */
+.an10 input[type="number"],
+.an10 input[type="text"],
+.an10 select {
+	border: 1px solid var(--an10-border-strong);
+	border-radius: var(--an10-ctl-r-sm);
+	box-shadow: none;
+	color: var(--an10-foreground);
+	font-family: var(--an10-sans);
+	font-size: 14px;
+	min-height: var(--an10-ctl-md);
+}
+
+.an10 input[type="checkbox"] {
+	border-color: var(--an10-border-strong);
+	border-radius: 4px;
+}
+
+.an10 input[type="checkbox"]:checked {
+	background: var(--an10-primary);
+	border-color: var(--an10-primary);
+}
+
+.an10 input[type="checkbox"]:checked::before {
+	filter: brightness(0) invert(1);
+}
+
+.an10 .form-table th {
+	font-weight: var(--an10-weight-ui);
+	padding: 16px 16px 16px 0;
+}
+
+.an10 .form-table td {
+	padding: 12px 0;
+}
+
+/* Cards: white, flat, one quiet edge. */
+.an10 .an10-card,
+.an10 .an10-panel,
+.an10 .an10-outcome,
+.an10 .an10-next {
+	background: var(--an10-background);
+	border: 1px solid var(--an10-border);
+	border-radius: var(--an10-ctl-r-sm);
+	padding: var(--an10-card-pad);
+}
+
+.an10 .an10-panel h2,
+.an10 .an10-card h2,
+.an10 .an10-next h2 {
+	margin: 0 0 var(--an10-group-gap);
+}
+
+.an10 .an10-panels {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+	gap: 16px;
+	margin: 16px 0 0;
+}
+
+/* Figures: three numbers first. */
+.an10 .an10-kpis {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+	gap: 16px;
+}
+
+.an10 .an10-kpi {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.an10 .an10-kpi__label {
+	color: var(--an10-muted-foreground);
+	font-size: 13px;
+	font-weight: var(--an10-weight-ui);
+}
+
+.an10 .an10-kpi__value {
+	color: var(--an10-foreground);
+	font-size: 24px;
+	font-variant-numeric: tabular-nums;
+	font-weight: var(--an10-weight-head);
+	letter-spacing: -0.02em;
+	line-height: 32px;
+}
+
+.an10 .an10-kpi__sub {
+	color: var(--an10-foreground-dim);
+	display: flex;
+	flex-wrap: wrap;
+	font-size: 13px;
+	gap: 4px 12px;
+}
+
+.an10 .an10-coverage {
+	color: var(--an10-foreground-dim);
+	font-size: 13px;
+	margin: 12px 0 0;
+	max-width: none;
+}
+
+/* Identity dots: an engine's colour beside its name, never on the text. */
+.an10 .an10-id {
+	align-items: center;
+	display: inline-flex;
+	gap: 6px;
+	white-space: nowrap;
+}
+
+.an10 .an10-id::before {
+	background: var(--an10-dot, var(--an10-foreground-dim));
+	border-radius: 50%;
+	content: "";
+	flex: none;
+	height: 8px;
+	width: 8px;
+}
+
+.an10 .an10-id--chatgpt { --an10-dot: var(--an10-engine-chatgpt); }
+.an10 .an10-id--perplexity { --an10-dot: var(--an10-engine-perplexity); }
+.an10 .an10-id--gemini { --an10-dot: var(--an10-engine-gemini); }
+.an10 .an10-id--claude { --an10-dot: var(--an10-engine-claude); }
+.an10 .an10-id--google { --an10-dot: var(--an10-engine-google); }
+.an10 .an10-id--none { --an10-dot: var(--an10-border-strong); }
+
+/* Status: a dot and words, never colour alone. */
+.an10 .an10-checks {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	margin: 0;
+}
+
+.an10 .an10-checks li {
+	display: grid;
+	gap: 10px;
+	grid-template-columns: 8px 1fr;
+	margin: 0;
+}
+
+.an10 .an10-checks li::before {
+	background: var(--an10-state, var(--an10-border-strong));
+	border-radius: 50%;
+	content: "";
+	height: 8px;
+	margin-top: 6px;
+	width: 8px;
+}
+
+.an10 .an10-checks .is-ok { --an10-state: var(--an10-success); }
+.an10 .an10-checks .is-finding { --an10-state: var(--an10-warning); }
+.an10 .an10-checks .is-bad { --an10-state: var(--an10-destructive); }
+.an10 .an10-checks .is-info { color: var(--an10-muted-foreground); }
+
+.an10 .an10-checks .an10-sub {
+	color: var(--an10-muted-foreground);
+}
+
+.an10 .an10-checks .an10-sub::before {
+	background: none;
+}
+
+.an10 .screen-reader-text {
+	letter-spacing: 0;
+}
+
+/* Tables: 40px head, 36px rows, quiet row lines, numbers aligned. */
+.an10 .widefat {
+	/* Positioned, so a screen-reader-only heading inside stays inside the
+	   table's own scroll box on a phone instead of widening the page. */
+	position: relative;
+	border: 1px solid var(--an10-border);
+	border-collapse: separate;
+	border-radius: var(--an10-ctl-r-sm);
+	border-spacing: 0;
+	box-shadow: none;
+	overflow: hidden;
+}
+
+.an10 .an10-panel .widefat {
+	border: 0;
+	border-radius: 0;
+	margin: 0 calc(-1 * var(--an10-card-pad));
+	width: calc(100% + 2 * var(--an10-card-pad));
+}
+
+.an10 .widefat thead th,
+.an10 .widefat thead td {
+	background: var(--an10-background);
+	border-bottom: 1px solid var(--an10-line-quiet);
+	color: var(--an10-muted-foreground);
+	font-size: 13px;
+	font-weight: var(--an10-weight-ui);
+	height: var(--an10-table-head-h);
+	padding: 0 var(--an10-table-cell-x);
+	vertical-align: middle;
+}
+
+.an10 .widefat tbody td,
+.an10 .widefat tbody th {
+	border-top: 1px solid var(--an10-line-quiet);
+	color: var(--an10-foreground);
+	height: var(--an10-table-row-h);
+	padding: 8px var(--an10-table-cell-x);
+	vertical-align: middle;
+}
+
+.an10 .widefat tbody tr:first-child td {
+	border-top: 0;
+}
+
+.an10 .widefat th:first-child,
+.an10 .widefat td:first-child {
+	padding-left: 16px;
+}
+
+.an10 .widefat th:last-child,
+.an10 .widefat td:last-child {
+	padding-right: 16px;
+}
+
+.an10 .striped > tbody > :nth-child(odd),
+.an10 .widefat tbody tr {
+	background: var(--an10-background);
+}
+
+.an10 .widefat tbody tr:hover {
+	background: var(--an10-surface-200);
+}
+
+.an10 .an10-num {
+	font-variant-numeric: tabular-nums;
+	text-align: right;
+	white-space: nowrap;
+}
+
+.an10 .widefat .an10-num {
+	width: 1%;
+}
+
+.an10 .an10-table {
+	margin: 0;
+}
+
+.an10 .an10-muted {
+	color: var(--an10-foreground-dim);
+	font-size: 13px;
+}
+
+.an10 .an10-sub {
+	color: var(--an10-muted-foreground);
+}
+
+.an10 .an10-neutral {
+	color: var(--an10-muted-foreground);
+}
+
+/* The one place the plugin points to the product. */
+.an10 .an10-next {
+	align-items: center;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 16px 24px;
+	justify-content: space-between;
+	margin: 16px 0 0;
+}
+
+.an10 .an10-next__text {
+	flex: 1 1 420px;
+}
+
+.an10 .an10-next__text p {
+	margin: 0;
+	max-width: var(--an10-measure);
+}
+
+.an10 .an10-next__text p + p {
+	color: var(--an10-muted-foreground);
+	margin-top: 4px;
+}
+
+.an10 .an10-next strong {
+	font-weight: var(--an10-weight-head);
+}
+
+.an10 .an10-next .an10-primary {
+	align-items: center;
+	display: inline-flex;
+	gap: 6px;
+}
+
+/* The chart: one series, columns from one baseline, quiet axis. */
+.an10 .an10-chart {
+	margin: 0;
+}
+
+.an10 .an10-chart__plot {
+	height: 140px;
+	margin: 20px 0 0 32px;
+	position: relative;
+}
+
+.an10 .an10-chart__tick {
+	border-top: 1px solid var(--an10-line-quiet);
+	left: 0;
+	position: absolute;
+	right: 0;
+}
+
+.an10 .an10-chart__tick span {
+	color: var(--an10-foreground-dim);
+	font-size: 12px;
+	font-variant-numeric: tabular-nums;
+	line-height: 16px;
+	position: absolute;
+	right: calc(100% + 8px);
+	top: -8px;
+}
+
+.an10 .an10-chart__cols,
+.an10 .an10-chart__x {
+	display: grid;
+	grid-auto-columns: 1fr;
+	grid-auto-flow: column;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.an10 .an10-chart__cols {
+	inset: 0;
+	position: absolute;
+}
+
+.an10 .an10-chart__col {
+	align-items: flex-end;
+	display: flex;
+	justify-content: center;
+	margin: 0;
+	position: relative;
+}
+
+.an10 .an10-chart__bar {
+	background: var(--an10-primary);
+	border-radius: 4px 4px 0 0;
+	display: block;
+	max-width: 24px;
+	min-height: 2px;
+	width: 62%;
+}
+
+.an10 .an10-chart__col:hover .an10-chart__bar,
+.an10 .an10-chart__col:focus .an10-chart__bar {
+	background: var(--an10-foreground-dim);
+}
+
+.an10 .an10-chart__col:focus {
+	outline-offset: 0;
+}
+
+/*
+ * The tooltip is CSS: the text is an attribute, so it can never be markup.
+ * It is not rendered until a column is pointed at or focused, so a hidden
+ * tooltip never widens the page; near either edge it opens inward.
+ */
+.an10 .an10-chart__bar {
+	position: relative;
+}
+
+.an10 .an10-chart__bar::after {
+	background: var(--an10-primary);
+	border-radius: var(--an10-ctl-r-xs);
+	bottom: calc(100% + 6px);
+	color: var(--an10-primary-foreground);
+	content: attr(data-tip);
+	display: none;
+	font-size: 12px;
+	font-variant-numeric: tabular-nums;
+	left: 50%;
+	line-height: 16px;
+	padding: 4px 8px;
+	pointer-events: none;
+	position: absolute;
+	transform: translateX(-50%);
+	white-space: nowrap;
+	z-index: 2;
+}
+
+.an10 .an10-chart__col:nth-child(-n+4) .an10-chart__bar::after {
+	left: 0;
+	transform: none;
+}
+
+.an10 .an10-chart__col:nth-last-child(-n+5) .an10-chart__bar::after {
+	left: auto;
+	right: 0;
+	transform: none;
+}
+
+.an10 .an10-chart__col:hover .an10-chart__bar::after,
+.an10 .an10-chart__col:focus .an10-chart__bar::after {
+	display: block;
+}
+
+.an10 .an10-chart__col:hover,
+.an10 .an10-chart__col:focus {
+	z-index: 3;
+}
+
+.an10 .an10-chart__x {
+	margin: 6px 0 0 32px;
+}
+
+.an10 .an10-chart__x li {
+	color: var(--an10-foreground-dim);
+	font-size: 12px;
+	line-height: 16px;
+	margin: 0;
+	overflow: visible;
+	text-align: center;
+	white-space: nowrap;
+}
+
+.an10 .an10-chart__empty {
+	color: var(--an10-muted-foreground);
+	font-size: 13px;
+	left: 50%;
+	margin: 0;
+	position: absolute;
+	top: 50%;
+	transform: translate(-50%, -50%);
+}
+
+.an10 .an10-card__head {
+	align-items: baseline;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px 12px;
+	justify-content: space-between;
+}
+
+.an10 .an10-card__head h2 {
+	margin: 0;
+}
+
+.an10 details.an10-data {
+	margin: 12px 0 0;
+}
+
+.an10 details.an10-data summary {
+	color: var(--an10-muted-foreground);
+	cursor: pointer;
+	font-size: 13px;
+	width: max-content;
+}
+
+.an10 details.an10-data .widefat {
+	margin-top: 8px;
+	max-width: 360px;
+}
+
+/* Fix screens and lists. */
+.an10 .an10-pre {
+	background: var(--an10-surface-200);
+	border: 1px solid var(--an10-line-quiet);
+	border-radius: var(--an10-ctl-r-sm);
+	color: var(--an10-foreground);
+	font-family: var(--an10-mono);
+	font-size: 12px;
+	line-height: 18px;
+	max-height: 420px;
+	overflow: auto;
+	padding: 12px 14px;
+	white-space: pre-wrap;
+}
+
+.an10 .an10-items {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	margin: 8px 0 0;
+}
+
+.an10 .an10-items li {
+	margin: 0;
+}
+
+.an10 .an10-outline {
+	list-style: none;
+	margin: 0;
+}
+
+.an10 .an10-outline li {
+	margin: 4px 0;
+}
+
+.an10 .an10-outline code {
+	background: var(--an10-surface-200);
+	border-radius: 4px;
+	color: var(--an10-muted-foreground);
+	padding: 1px 4px;
+}
+
+.an10 .an10-outcome {
+	margin: 8px 0 0;
+}
+
+.an10 .an10-outcome p {
+	margin: 0 0 8px;
+}
+
+.an10 .an10-outcome ul {
+	margin: 0;
+}
+
+.an10 .an10-inline {
+	display: inline-block;
+	margin: 16px 8px 0 0;
+}
+
+.an10 .an10-back {
+	margin: 0 0 8px;
+}
+
+.an10 .an10-back a {
+	color: var(--an10-muted-foreground);
+	font-size: 13px;
+	text-decoration: none;
+}
+
+.an10 .notice {
+	border-radius: var(--an10-ctl-r-sm);
+	box-shadow: none;
+	margin: 0 0 16px;
+}
+
+@media (max-width: 782px) {
+	.an10 .an10-chart__plot,
+	.an10 .an10-chart__x {
+		margin-left: 28px;
+	}
+
+	.an10 .nav-tab-wrapper {
+		gap: 16px;
+		overflow-x: auto;
+		overflow-y: hidden;
+	}
+
+	.an10 .nav-tab {
+		margin-bottom: 0;
+		white-space: nowrap;
+	}
+
+	.an10 .an10-panels,
+	.an10 .an10-kpis {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	/* A table wider than a phone scrolls inside its own box, never the page. */
+	.an10 .an10-panel,
+	.an10 .an10-table {
+		min-width: 0;
+		overflow-x: auto;
+	}
+
+	.an10 .an10-table {
+		display: block;
+	}
+}
+
+.an10 .an10-days {
+	margin-top: 16px;
+}
+
+.an10 .an10-after {
+	margin: 12px 0 0;
+}
+
+/* A number column is as narrow as its widest number; its heading wraps. */
+.an10 .widefat thead th.an10-num {
+	line-height: 16px;
+	min-width: 56px;
+	padding-bottom: 6px;
+	padding-top: 6px;
+	white-space: normal;
+}
+
+.an10 p {
+	max-width: var(--an10-measure);
+}
+
+.an10 .widefat .an10-mid {
+	min-width: 160px;
+}

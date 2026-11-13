@@ -1,0 +1,79 @@
+<!doctype html>
+<!--
+  WordPress.org listing banner, rendered at 1544x500 and scaled to 772x250.
+  Brand: the full lockup ("Agent Number" + the ring badge as the 10), never the
+  disc alone and never the 10 twice; #0a0a0f ground; spectrum gradient
+  #4f46e5 #7c3aed #c026d3 #f43f5e (apps/marketing globals.css). The chart is an
+  illustration of the plugin's Overview chart, not real data.
+  Re-render: serve the plugin folder over HTTP, open this page at a 1544x500
+  viewport and screenshot it (see bin/wporg-assets/README.md).
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>AN10 AI Crawler Analytics banner</title>
+<style>
+  @font-face { font-family: "Inter"; src: url("../../assets/fonts/Inter-opsz-latin.woff2") format("woff2"); font-weight: 100 900; }
+  @font-face { font-family: "JetBrains Mono"; src: url("../../assets/fonts/JetBrainsMono-latin.woff2") format("woff2"); font-weight: 100 800; }
+  :root { --ground: #0a0a0f; --ink: #fafafa; --muted: #a1a1aa; --faint: #71717a; --rule: #27272a; }
+  html, body { margin: 0; padding: 0; background: var(--ground); }
+  .banner { position: relative; width: 1544px; height: 500px; overflow: hidden; background: var(--ground); font-family: "Inter", sans-serif; color: var(--ink); }
+  .copy { position: absolute; left: 112px; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: center; gap: 26px; }
+  .lockup { display: flex; align-items: center; gap: 12px; font-weight: 700; font-size: 34px; letter-spacing: -0.02em; }
+  .lockup svg { width: 54px; height: 54px; display: block; }
+  h1 { margin: 0; font-weight: 700; font-size: 92px; line-height: 1; letter-spacing: -0.03em; }
+  .sub { margin: 0; font-size: 31px; line-height: 1.35; color: var(--muted); letter-spacing: -0.005em; }
+  .facts { margin: 0; font-family: "JetBrains Mono", monospace; font-size: 19px; color: var(--faint); letter-spacing: 0.01em; }
+  .chart { position: absolute; right: 104px; bottom: 112px; }
+</style>
+</head>
+<body>
+<div class="banner">
+  <div class="copy">
+    <div class="lockup">
+      <span>Agent Number</span>
+      <svg viewBox="0 0 512 512" aria-hidden="true">
+        <defs>
+          <linearGradient id="ring" x1="0" y1="0" x2="512" y2="512" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#4f46e5"/><stop offset="0.34" stop-color="#7c3aed"/>
+            <stop offset="0.66" stop-color="#c026d3"/><stop offset="1" stop-color="#f43f5e"/>
+          </linearGradient>
+        </defs>
+        <circle cx="256" cy="256" r="230" fill="none" stroke="url(#ring)" stroke-width="44"/>
+        <text x="256" y="268" text-anchor="middle" dominant-baseline="central" font-size="250"
+              style="fill:#fafafa;font-family:Inter,sans-serif;font-weight:700;letter-spacing:-0.06em">10</text>
+      </svg>
+    </div>
+    <h1>AI Crawler Analytics</h1>
+    <p class="sub">Verified AI crawler visits, visits from AI answers,<br>and AEO readiness for every page.</p>
+    <p class="facts">Free · No account · Stores no IP addresses</p>
+  </div>
+  <svg class="chart" width="420" height="230" viewBox="0 0 420 230" aria-hidden="true">
+    <defs>
+      <linearGradient id="bars" x1="0" y1="0" x2="420" y2="0" gradientUnits="userSpaceOnUse">
+        <stop stop-color="#4f46e5"/><stop offset="0.34" stop-color="#7c3aed"/>
+        <stop offset="0.66" stop-color="#c026d3"/><stop offset="1" stop-color="#f43f5e"/>
+      </linearGradient>
+    </defs>
+    <g id="g"></g>
+    <line x1="0" y1="229" x2="420" y2="229" stroke="#27272a" stroke-width="2"/>
+  </svg>
+</div>
+<script>
+  // 30 days, rising with a weekly rhythm: an illustration of the Overview chart.
+  const g = document.getElementById('g');
+  const n = 30, w = 12, gap = 2, base = 228;
+  for (let i = 0; i < n; i++) {
+    const trend = 34 + i * 5.2;
+    const week = 22 * Math.sin((i / 7) * Math.PI * 2 + 0.6);
+    const h = Math.max(14, Math.round(trend + week));
+    const x = i * (w + gap);
+    const r = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    // Square at the baseline, 4px rounded at the data end.
+    r.setAttribute('d', `M${x},${base} V${base - h + 4} Q${x},${base - h} ${x + 4},${base - h} H${x + w - 4} Q${x + w},${base - h} ${x + w},${base - h + 4} V${base} Z`);
+    r.setAttribute('fill', 'url(#bars)');
+    g.appendChild(r);
+  }
+</script>
+</body>
+</html>

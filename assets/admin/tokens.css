@@ -1,0 +1,43 @@
+/*
+ * Brand colours and type for these screens, kept identical to
+ * agentnumber10.com (light theme) so the plugin and the service look alike.
+ */
+.an10 {
+	--an10-foreground: #1a2326;
+	--an10-muted-foreground: #5b6670;
+	--an10-foreground-dim: #6b7280;
+	--an10-background: #ffffff;
+	--an10-surface-200: #f4f4f5;
+	--an10-border: rgba(26, 35, 38, 0.14);
+	--an10-border-strong: rgba(26, 35, 38, 0.22);
+	--an10-line-quiet: #eeeeee;
+	--an10-primary: #202020;
+	--an10-primary-foreground: #ffffff;
+	--an10-ring: #7c3aed;
+	--an10-brand-200: #ede9fe;
+	--an10-brand-400: #7c3aed;
+	--an10-success: oklch(0.723 0.191 149.579);
+	--an10-warning: oklch(0.681 0.162 75.834);
+	--an10-destructive: oklch(0.577 0.245 27.325);
+	--an10-engine-chatgpt: oklch(69.6% 0.17 162.48);
+	--an10-engine-perplexity: oklch(68.5% 0.169 237.323);
+	--an10-engine-gemini: oklch(65.6% 0.241 354.308);
+	--an10-engine-claude: oklch(70.5% 0.213 47.604);
+	--an10-engine-google: oklch(62.3% 0.214 259.815);
+	--an10-ctl-xs: 24px;
+	--an10-ctl-sm: 28px;
+	--an10-ctl-md: 32px;
+	--an10-ctl-r-xs: 6px;
+	--an10-ctl-r-sm: 8px;
+	--an10-weight-ui: 500;
+	--an10-weight-head: 600;
+	--an10-tracking-ui: -0.005em;
+	--an10-table-head-h: 40px;
+	--an10-table-row-h: 36px;
+	--an10-table-cell-x: 12px;
+	--an10-section-gap: 40px;
+	--an10-group-gap: 12px;
+	--an10-card-gap: 8px;
+	--an10-card-pad: 16px;
+	--an10-measure: 72ch;
+}
