@@ -26,6 +26,7 @@
 		"check-generated": "php bin/generate.php --check",
 		"test": "phpunit",
 		"lint": "phpcs",
-		"guard": "bin/guard.sh"
+		"guard": "bin/guard.sh",
+		"activation-test": "bin/activation-test.sh build/an10-ai-crawler-analytics"
 	}
 }
