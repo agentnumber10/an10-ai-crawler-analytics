@@ -67,7 +67,7 @@ final class AN10_Admin {
 		add_action( 'admin_init', array( self::class, 'activation_redirect' ) );
 		add_action( 'admin_enqueue_scripts', array( self::class, 'assets' ) );
 		add_action( 'admin_notices', array( self::class, 'first_data_notice' ) );
-		foreach ( array( 'apply', 'undo', 'rescan', 'settings', 'refresh_lists', 'dismiss' ) as $action ) {
+		foreach ( array( 'apply', 'undo', 'rescan', 'settings', 'refresh_lists', 'dismiss', 'verification' ) as $action ) {
 			add_action( "admin_post_an10_{$action}", array( self::class, "handle_{$action}" ) );
 		}
 		add_filter( 'plugin_action_links_' . plugin_basename( AN10_FILE ), array( self::class, 'action_links' ) );
@@ -222,6 +222,11 @@ final class AN10_Admin {
 		$fetches   = array_sum( array_column( $ai, 'verified' ) );
 		$listening = (int) get_option( 'an10_installed_at', time() );
 
+		// Nothing can be verified, and no list is downloaded, until the owner agrees.
+		if ( ! AN10_Verifier::enabled() ) {
+			self::render_verification_offer();
+		}
+
 		// Three numbers first.
 		echo '<div class="an10-kpis">';
 		self::kpi(
@@ -375,7 +380,11 @@ final class AN10_Admin {
 		// Which crawlers came.
 		echo '<section class="an10-panel"><h2>' . esc_html__( 'Crawlers, last 30 days', 'an10-ai-crawler-analytics' ) . '</h2>';
 		if ( ! $verified ) {
-			echo '<p class="description">' . esc_html__( 'A visit appears here only after its address matches the list its operator publishes, so this may stay empty for a while.', 'an10-ai-crawler-analytics' ) . '</p>';
+			echo '<p class="description">' . esc_html(
+				AN10_Verifier::enabled()
+					? __( 'A visit appears here only after its address matches the list its operator publishes, so this may stay empty for a while.', 'an10-ai-crawler-analytics' )
+					: __( 'Crawler verification is off, so no visit can be confirmed yet. Turn it on above to start counting.', 'an10-ai-crawler-analytics' )
+			) . '</p>';
 		} else {
 			$operators = array_column( AN10_Registry::crawlers(), 'operator', 'token' );
 			echo '<table class="widefat an10-table"><thead><tr><th>' . esc_html__( 'Crawler', 'an10-ai-crawler-analytics' ) . '</th><th class="an10-num">' . esc_html__( 'Fetches', 'an10-ai-crawler-analytics' ) . '</th><th class="an10-num">' . esc_html__( 'Pages', 'an10-ai-crawler-analytics' ) . '</th><th class="an10-num">' . esc_html__( 'Last seen', 'an10-ai-crawler-analytics' ) . '</th></tr></thead><tbody>';
@@ -423,6 +432,32 @@ final class AN10_Admin {
 		echo '</section></div>';
 
 		self::render_findings( $counts, $blocked );
+	}
+
+	/**
+	 * The consent step for crawler verification: what is downloaded, from
+	 * whom, what is sent, and one button. Shown until the owner turns it on.
+	 */
+	private static function render_verification_offer(): void {
+		$operators = array();
+		foreach ( AN10_Registry::crawlers() as $c ) {
+			if ( null !== $c['ip_ranges'] ) {
+				$operators[] = (string) $c['operator'];
+			}
+		}
+		$operators   = array_values( array_unique( $operators ) );
+		$operators[] = 'Cloudflare';
+		echo '<div class="an10-next an10-consent"><div class="an10-next__text"><p><strong>' . esc_html__( 'Turn on crawler verification', 'an10-ai-crawler-analytics' ) . '</strong></p><p>' . esc_html(
+			sprintf(
+				/* translators: %s: list of companies, such as "OpenAI, Anthropic and Cloudflare". */
+				__( 'Anyone can send a request that says it is GPTBot. To count only real AI crawlers, this plugin checks each visit against the IP address lists published by %s. Turning this on downloads those lists now and once a day after that. Each download sends only the WordPress and plugin versions, nothing about your site or its visitors. You can turn it off in Settings.', 'an10-ai-crawler-analytics' ),
+				wp_sprintf( '%l', $operators )
+			)
+		) . '</p></div>';
+		echo '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '">';
+		wp_nonce_field( 'an10_verification' );
+		echo '<input type="hidden" name="action" value="an10_verification"><input type="hidden" name="on" value="1">';
+		echo '<button type="submit" class="button an10-primary">' . esc_html__( 'Turn on verification', 'an10-ai-crawler-analytics' ) . '</button></form></div>';
 	}
 
 	/**
@@ -629,6 +664,13 @@ final class AN10_Admin {
 		wp_nonce_field( 'an10_settings' );
 		echo '<input type="hidden" name="action" value="an10_settings"><table class="form-table" role="presentation">';
 		printf(
+			'<tr><th scope="row">%s</th><td><label><input type="checkbox" name="verify_crawlers" value="1"%s> %s</label><p class="description">%s</p></td></tr>',
+			esc_html__( 'Crawler verification', 'an10-ai-crawler-analytics' ),
+			checked( ! empty( $s['verify_crawlers'] ), true, false ),
+			esc_html__( 'Download each crawler operator\'s published IP address list once a day, so visits can be verified', 'an10-ai-crawler-analytics' ),
+			esc_html__( 'Off until you turn it on. Each download sends only the WordPress and plugin versions. Turning it off stops the downloads and deletes the stored lists.', 'an10-ai-crawler-analytics' )
+		);
+		printf(
 			'<tr><th scope="row"><label for="an10-retention">%s</label></th><td><input id="an10-retention" type="number" min="7" max="730" name="retention_days" value="%d"> %s</td></tr>',
 			esc_html__( 'Keep events for', 'an10-ai-crawler-analytics' ),
 			(int) $s['retention_days'],
@@ -666,7 +708,12 @@ final class AN10_Admin {
 
 		echo '<h2>' . esc_html__( 'What is stored', 'an10-ai-crawler-analytics' ) . '</h2><p>' . esc_html__( 'For each AI crawler request: the time, the crawler\'s name, whether its address matched the operator\'s published list, the page and the HTTP status. For each visitor from an AI answer: the time, the engine and the page. No IP address, no full user agent, no query string, no cookie and nothing that identifies a person is stored. Unless you click a link to agentnumber10.com, nothing about your site, its content or its visitors leaves your server.', 'an10-ai-crawler-analytics' ) . '</p>';
 
-		echo '<h2>' . esc_html__( 'Crawler address lists', 'an10-ai-crawler-analytics' ) . '</h2><p class="description">' . esc_html__( 'Downloaded once a day from each operator, so a visit can be checked against the addresses that operator publishes. These are the only requests this plugin makes to other sites.', 'an10-ai-crawler-analytics' ) . '</p>';
+		$verifying = AN10_Verifier::enabled();
+		echo '<h2>' . esc_html__( 'Crawler address lists', 'an10-ai-crawler-analytics' ) . '</h2><p class="description">' . esc_html(
+			$verifying
+				? __( 'Downloaded once a day from each operator, so a visit can be checked against the addresses that operator publishes. These are the only requests this plugin makes to other sites.', 'an10-ai-crawler-analytics' )
+				: __( 'Crawler verification is off, so none of these lists is downloaded and this plugin makes no request to other sites. Turn verification on above to use them.', 'an10-ai-crawler-analytics' )
+		) . '</p>';
 		echo '<table class="widefat an10-table"><thead><tr><th>' . esc_html__( 'List', 'an10-ai-crawler-analytics' ) . '</th><th class="an10-num">' . esc_html__( 'Ranges', 'an10-ai-crawler-analytics' ) . '</th><th>' . esc_html__( 'Updated', 'an10-ai-crawler-analytics' ) . '</th></tr></thead><tbody>';
 		$lists = AN10_Verifier::lists();
 		foreach ( AN10_Verifier::list_urls() as $url ) {
@@ -679,7 +726,9 @@ final class AN10_Admin {
 			);
 		}
 		echo '</tbody></table>';
-		self::button_form( 'an10_refresh_lists', __( 'Refresh lists now', 'an10-ai-crawler-analytics' ) );
+		if ( $verifying ) {
+			self::button_form( 'an10_refresh_lists', __( 'Refresh lists now', 'an10-ai-crawler-analytics' ) );
+		}
 		self::button_form( 'an10_rescan', __( 'Rescan all pages now', 'an10-ai-crawler-analytics' ) );
 	}
 
@@ -833,6 +882,8 @@ final class AN10_Admin {
 			wp_die( esc_html__( 'Not allowed.', 'an10-ai-crawler-analytics' ) );
 		}
 		$header = isset( $_POST['proxy_header'] ) ? sanitize_text_field( wp_unslash( $_POST['proxy_header'] ) ) : '';
+		$verify = ! empty( $_POST['verify_crawlers'] );
+		$was    = AN10_Verifier::enabled();
 		update_option(
 			AN10_Plugin::SETTINGS,
 			array(
@@ -840,10 +891,35 @@ final class AN10_Admin {
 				'weekly_email'        => ! empty( $_POST['weekly_email'] ),
 				'proxy_header'        => in_array( $header, array( 'HTTP_X_FORWARDED_FOR', 'HTTP_X_REAL_IP', 'HTTP_TRUE_CLIENT_IP' ), true ) ? $header : '',
 				'delete_on_uninstall' => ! empty( $_POST['delete_on_uninstall'] ),
+				'verify_crawlers'     => $was,
 			)
 		);
+		// Turning verification on or off also starts or stops the downloads.
+		if ( $verify !== $was ) {
+			AN10_Verifier::set_enabled( $verify );
+		}
 		self::set_flash( 'success', __( 'Settings saved.', 'an10-ai-crawler-analytics' ) );
 		wp_safe_redirect( self::url( 'settings' ) );
+		exit;
+	}
+
+	/**
+	 * Turn crawler verification on or off.
+	 */
+	public static function handle_verification(): void {
+		check_admin_referer( 'an10_verification' );
+		if ( ! current_user_can( self::CAP ) ) {
+			wp_die( esc_html__( 'Not allowed.', 'an10-ai-crawler-analytics' ) );
+		}
+		$on = ! empty( $_POST['on'] );
+		AN10_Verifier::set_enabled( $on );
+		self::set_flash(
+			'success',
+			$on
+				? __( 'Crawler verification is on. The lists download in the background, and visits are checked against them from then on.', 'an10-ai-crawler-analytics' )
+				: __( 'Crawler verification is off. No more lists will be downloaded, and the stored copies were deleted.', 'an10-ai-crawler-analytics' )
+		);
+		wp_safe_redirect( wp_get_referer() ? wp_get_referer() : self::url() );
 		exit;
 	}
 

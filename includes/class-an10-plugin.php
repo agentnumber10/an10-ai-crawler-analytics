@@ -4,9 +4,11 @@
  *
  * Standalone mode is the only mode in this version. Nothing here talks to
  * agentnumber10.com; the only outbound requests are the crawler IP range
- * lists, fetched once a day by a scheduled event, never on a page request.
- * The free checker button is a plain link the site owner may click. Any new
- * outbound request must be added to readme.txt's External services first.
+ * lists, and only after the site owner turns crawler verification on: then
+ * a scheduled event fetches them once a day, never on a page request.
+ * Activation contacts no other site. The free checker button is a plain link
+ * the site owner may click. Any new outbound request must be opt-in and added
+ * to readme.txt's External services first.
  *
  * @package AiCrawlerAnalytics
  */
@@ -28,6 +30,7 @@ final class AN10_Plugin {
 		'weekly_email'        => false,
 		'proxy_header'        => '',
 		'delete_on_uninstall' => false,
+		'verify_crawlers'     => false,
 	);
 
 	/**
@@ -72,7 +75,9 @@ final class AN10_Plugin {
 	}
 
 	/**
-	 * Activation: create the event table, schedule work, scan the site.
+	 * Activation: create the event table, schedule local housekeeping, scan the
+	 * site. Nothing is downloaded: the crawler IP lists are fetched only after
+	 * the site owner turns verification on (see AN10_Verifier::set_enabled()).
 	 *
 	 * @param bool $network_wide Network activation.
 	 */
@@ -88,9 +93,6 @@ final class AN10_Plugin {
 		if ( ! wp_next_scheduled( 'an10_weekly' ) ) {
 			wp_schedule_event( time() + WEEK_IN_SECONDS, 'weekly', 'an10_weekly' );
 		}
-		// The IP lists are fetched in the background so activation never waits on
-		// another site. Until they arrive every crawler visit is labelled Unverified.
-		wp_schedule_single_event( time(), 'an10_refresh_lists' );
 
 		AN10_Scanner::start_full_scan();
 
@@ -109,7 +111,8 @@ final class AN10_Plugin {
 	}
 
 	/**
-	 * Daily housekeeping: refresh IP lists, prune old events, rescan weekly.
+	 * Daily housekeeping: refresh IP lists (only when verification is on),
+	 * prune old events, rescan weekly.
 	 */
 	public static function daily(): void {
 		AN10_Verifier::refresh();

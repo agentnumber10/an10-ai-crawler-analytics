@@ -24,9 +24,11 @@
  * such a header too; that moves their visit from Spoofed to Unverified, and
  * neither is ever counted.
  *
- * The lists are fetched by a daily scheduled event. A page request only
- * compares an address against lists already stored, and the address is never
- * written anywhere.
+ * Downloading the lists means contacting other sites, so it is off until the
+ * site owner turns verification on. Until then no list is fetched and every
+ * claimed crawler visit is Unverified. Once on, the lists are fetched by a
+ * daily scheduled event. A page request only compares an address against
+ * lists already stored, and the address is never written anywhere.
  *
  * @package AiCrawlerAnalytics
  */
@@ -91,10 +93,42 @@ final class AN10_Verifier {
 	}
 
 	/**
-	 * Download every list. A failed download keeps the previous copy, and a
-	 * list no longer in use is dropped.
+	 * Has the site owner turned verification on? Off on a new install.
+	 */
+	public static function enabled(): bool {
+		return (bool) AN10_Plugin::setting( 'verify_crawlers' );
+	}
+
+	/**
+	 * Turn verification on or off. On: the first download runs in the
+	 * background right away, then daily with the housekeeping event. Off: no
+	 * further downloads, and the stored lists are deleted.
+	 *
+	 * @param bool $on Turn on.
+	 */
+	public static function set_enabled( bool $on ): void {
+		$settings                    = wp_parse_args( (array) get_option( AN10_Plugin::SETTINGS, array() ), AN10_Plugin::DEFAULTS );
+		$settings['verify_crawlers'] = $on;
+		update_option( AN10_Plugin::SETTINGS, $settings );
+
+		if ( $on ) {
+			if ( ! wp_next_scheduled( 'an10_refresh_lists' ) ) {
+				wp_schedule_single_event( time(), 'an10_refresh_lists' );
+			}
+			return;
+		}
+		wp_clear_scheduled_hook( 'an10_refresh_lists' );
+		delete_option( self::OPTION );
+	}
+
+	/**
+	 * Download every list, if verification is on. A failed download keeps the
+	 * previous copy, and a list no longer in use is dropped.
 	 */
 	public static function refresh(): void {
+		if ( ! self::enabled() ) {
+			return;
+		}
 		$lists = array_intersect_key( self::lists(), array_flip( self::list_urls() ) );
 		foreach ( self::list_urls() as $url ) {
 			$response = wp_remote_get(
@@ -125,12 +159,13 @@ final class AN10_Verifier {
 	}
 
 	/**
-	 * Stored lists, keyed by URL.
+	 * Stored lists, keyed by URL. None while verification is off, even if an
+	 * earlier copy is still stored.
 	 *
 	 * @return array<string, array{ranges: string[], fetched_at: int, error?: string}>
 	 */
 	public static function lists(): array {
-		return (array) get_option( self::OPTION, array() );
+		return self::enabled() ? (array) get_option( self::OPTION, array() ) : array();
 	}
 
 	/**

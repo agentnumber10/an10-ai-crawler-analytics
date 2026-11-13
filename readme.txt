@@ -14,6 +14,8 @@ Verified AI crawler log, visits from ChatGPT and Perplexity, and AEO readiness f
 
 Most AI crawler logs trust the user agent. Anyone can send `User-agent: GPTBot`. This plugin checks every claimed AI crawler visit against the IP addresses its operator publishes, and labels it **Verified**, **Spoofed** or **Unverified**. Only verified visits are ever counted as crawler visits. A visit is called Spoofed only when there is no doubt: if it came through a proxy whose real visitor address the plugin cannot see, or the operator's list could not be refreshed for a week, it is Unverified instead, so a real crawler is never accused.
 
+Verification is off until you turn it on, because it means downloading those published lists from each operator. One click on the plugin's screen starts it, and you can turn it off again in Settings.
+
 AN10 is short for Agent Number 10 (agentnumber10.com), the team that makes this plugin.
 
 **What it shows you, with no account and no setup:**
@@ -46,7 +48,7 @@ The admin screens load their fonts and images from the plugin's own folder. Noth
 
 == External services ==
 
-**Crawler IP lists.** To verify crawler identity, a scheduled task downloads each operator's published IP range list once a day, never during a page request. Each download names only the WordPress and plugin versions in its user agent. Your site's address, its content and anything about its visitors are never sent.
+**Crawler IP lists.** Off until you turn on crawler verification on the plugin's screen; activating the plugin downloads nothing. Once you turn it on, a scheduled task downloads each operator's published IP range list right away and then once a day, never during a page request. Each download names only the WordPress and plugin versions in its user agent. Your site's address, its content and anything about its visitors are never sent. Turning verification off in Settings stops the downloads and deletes the stored lists.
 
 * OpenAI: https://openai.com/gptbot.json, https://openai.com/searchbot.json, https://openai.com/chatgpt-user.json ([terms](https://openai.com/policies/terms-of-use), [privacy](https://openai.com/policies/privacy-policy))
 * Anthropic: https://claude.com/crawling/bots.json ([privacy](https://www.anthropic.com/legal/privacy))
@@ -62,11 +64,11 @@ The admin screens load their fonts and images from the plugin's own folder. Noth
 
 = Why does the crawler panel say nothing yet? =
 
-It only counts a visit after checking the address against the operator's list. On a new install that takes time. The panel says so rather than showing unverified numbers.
+It only counts a visit after checking the address against the operator's list, so crawler verification has to be on first. After that, a new install takes time to see crawlers. The panel says so rather than showing unverified numbers.
 
 = My site is behind Cloudflare. Does verification work? =
 
-Yes. Cloudflare is detected from its published ranges. For any other proxy, choose the header it sets in Settings; until then its visits are labelled Unverified, never Spoofed.
+Yes. With verification on, Cloudflare is detected from its published ranges. For any other proxy, choose the header it sets in Settings; until then its visits are labelled Unverified, never Spoofed.
 
 Cloudflare can also block AI crawlers, or add its own rules to robots.txt, before a request reaches WordPress. The plugin cannot see that, and says so on sites behind Cloudflare.
 
