@@ -21,6 +21,7 @@
 		}
 	},
 	"scripts": {
+		"post-install-cmd": "git config core.hooksPath .githooks || true",
 		"generate": "php bin/generate.php",
 		"check-generated": "php bin/generate.php --check",
 		"test": "phpunit",

@@ -1,0 +1,4 @@
+#!/bin/sh
+# Checks the commit message: format, length, and nothing that must stay private.
+# The rules live in bin/guard.sh so CI applies exactly the same ones.
+exec bin/guard.sh --message "$1"

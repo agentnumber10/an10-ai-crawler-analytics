@@ -1,0 +1,18 @@
+#!/bin/sh
+# Runs before every commit. Enable once per clone: git config core.hooksPath .githooks
+# (composer install does this for you).
+set -e
+
+bin/guard.sh --staged
+php bin/generate.php --check
+
+staged_php=$(git diff --cached --name-only --diff-filter=ACMR -- '*.php')
+if [ -n "$staged_php" ]; then
+	# shellcheck disable=SC2086 # one argument per file
+	vendor/bin/phpcs -q $staged_php
+fi
+
+vendor/bin/phpunit --no-coverage >/dev/null || {
+	echo "pre-commit: the tests fail; run vendor/bin/phpunit to see why" >&2
+	exit 1
+}
