@@ -122,7 +122,7 @@ final class AN10_Ip {
 	 */
 	public static function is_cidr( string $cidr ): bool {
 		$parts = explode( '/', $cidr );
-		if ( 2 !== count( $parts ) || ! ctype_digit( $parts[1] ) ) {
+		if ( 2 !== count( $parts ) || ! preg_match( '/^\d+$/', $parts[1] ) ) {
 			return false;
 		}
 		$bin = @inet_pton( $parts[0] ); // phpcs:ignore WordPress.PHP.NoSilencedErrors
